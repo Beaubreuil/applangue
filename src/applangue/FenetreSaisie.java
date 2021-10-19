@@ -189,6 +189,7 @@ public class FenetreSaisie extends JFrame {
 	}
 	public void setMessageLabel(String message) {
 		this.message.setText(message);
+		
 	}
 
 	//Dictionnary
