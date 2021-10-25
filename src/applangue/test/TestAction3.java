@@ -6,7 +6,7 @@ import applangue.GetAction3;
 public class TestAction3 {
 
 	@Test
-	public void TestAction3() {
+	public void TestAll() {
 		// TODO Auto-generated constructor stub
 	}
 	 

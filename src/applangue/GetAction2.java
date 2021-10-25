@@ -14,18 +14,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 
-public class GetAction2 extends AbstractAction {
+public class GetAction2 extends GetAction {
 	private FenetreSaisie fenetre;
 	
 	public GetAction2(FenetreSaisie fenetre, String texte){
-		super(texte);		
+		super(fenetre,texte);		
 		this.fenetre = fenetre;
 	}
 	
@@ -60,6 +62,10 @@ public class GetAction2 extends AbstractAction {
           // Get iterator to all the rows in current sheet
           Iterator<Row> rowIterator = mySheet.iterator();
           Row row = rowIterator.next();
+          
+          List<Mot> lmot = new ArrayList<Mot>();
+          List<String> lcate = new ArrayList<String>();
+          Set<String> scate = new HashSet<String>();
           // Traversing over each row of XLSX file
           while (rowIterator.hasNext()) {
               
@@ -86,6 +92,10 @@ public class GetAction2 extends AbstractAction {
                 		  fenetre.getDico_esp_fr().put(couple.get(0),couple.get(1));
                 		  fenetre.getDico_fr_esp().put(couple.get(1),couple.get(0));
                 	  }
+                	  if (compteur==3) {
+                		  lmot.add(new Mot(couple.get(0),couple.get(1),couple.get(2)));
+                		  scate.add(couple.get(2));
+                	  }
                 
                       break;
                   default :
@@ -93,14 +103,23 @@ public class GetAction2 extends AbstractAction {
                   }
               }
           }
+          
+          //liste mot
+          fenetre.setListMot(lmot);
+          //fenetre.getMenu().removeAllItems();
+          scate.forEach((mot)->{
+        	  fenetre.getMenu().addItem(mot);
+          });
+          fenetre.getMenu().addItem("All");
+          fenetre.getMenu().addItem("Recent");
+          
           //modifier score pour mettre le total
-          String tmp = fenetre.getScore().getText();
-          String[] parts = tmp.split("/");
-          fenetre.getScore().setText(parts[0]+"/"+String.valueOf(fenetre.getDicoTmp().values().size()));
+          MajScore();
           
           //Clone the dictionnarys into temporary ones
           fenetre.getDicoTmp().putAll(fenetre.getDico_esp_fr());
           fenetre.getDicoTmp2().putAll(fenetre.getDico_fr_esp());
+          fenetre.setDicoJetable(fenetre.getDicoTmp());
           
           //We put the button Valider visible
           fenetre.getButton().setVisible(true);
@@ -113,13 +132,14 @@ public class GetAction2 extends AbstractAction {
           fenetre.getButtonExcel().setVisible(false);
           fenetre.getScore().setVisible(true);
           fenetre.getButtonSwitch().setVisible(true);
+          fenetre.getMenu().setVisible(true);
         
        }
 	} 
 	
 	
 	private File FileSelect() {
-		JFileChooser fileChooser = new JFileChooser();
+		/*JFileChooser fileChooser = new JFileChooser();
         int returnValue = fileChooser.showOpenDialog(null);
         //Check the extension of file
         
@@ -131,15 +151,8 @@ public class GetAction2 extends AbstractAction {
         else {
         	System.out.print("File could not open");
         	return null;
-        }
-	}
-	
-	public String pick_random(FenetreSaisie fenetre) {
-		Random generator = new Random();
-		Object[] values = fenetre.getDicoTmp().values().toArray();
-		Object randomValue = values[generator.nextInt(values.length)];
-		//On change le texte du label et on reset le texte de réussite
-		return (String) randomValue;
+        }*/
+		return new File("I:\\ressource espagnol\\mot espagnol.xlsx");
 	}
 	
 }
